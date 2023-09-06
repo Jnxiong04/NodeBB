@@ -3,7 +3,19 @@ import user from '../user';
 import plugins from '../plugins';
 import cache from '../cache'
 
-module.exports = function (Groups) {
+type GroupsType = {
+    leave: (groupNames: string[], uid: number) => Promise<void>
+    isMemberOfGroups: (uid: number, groupNames: string[]) => Promise<boolean[]>
+    clearCache: (uid: number, groupsToLeave: string[]) => Promise<void>
+    getGroupsFields: (groupsToLeave: string[], str: string) => Promise<GroupsType>   //check str and return type
+    isPrivilegeGroups: (name: string) => Promise<boolean>
+    destroy: () => Promise<void>     //random stuff here
+    leaveAllGroups: (uid: number) => Promise<void>
+    rejectMembership: (groups: string[], uid: number) => Promise<void>
+    kick: (uid: number, groupName: string, isOwner: boolean) => Promise<void>
+}
+
+module.exports = function (Groups: GroupsType) {
     Groups.leave = async function (groupNames, uid) {
         if (Array.isArray(groupNames) && !groupNames.length) {
             return;
@@ -12,13 +24,15 @@ module.exports = function (Groups) {
             groupNames = [groupNames];
         }
 
-        const isMembers = await Groups.isMemberOfGroups(uid, groupNames);
+        const isMembers: boolean[] = await Groups.isMemberOfGroups(uid, groupNames);
 
-        const groupsToLeave = groupNames.filter((groupName, index) => isMembers[index]);
+        const groupsToLeave: string[] = groupNames.filter((groupName: string, index: number): boolean => isMembers[index]);
         if (!groupsToLeave.length) {
             return;
         }
 
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         await Promise.all([
             db.sortedSetRemove(groupsToLeave.map(groupName => `group:${groupName}:members`), uid),
             db.setRemove(groupsToLeave.map(groupName => `group:${groupName}:owners`), uid),
