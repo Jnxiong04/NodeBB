@@ -10,7 +10,7 @@ type GroupsType = {
     getGroupsFields: (groupsToLeave: string[], fields: string[]) => Promise<Group[]>
     isPrivilegeGroup: (name: string) => boolean
     leaveAllGroups: (uid: number) => Promise<void>
-    destroy: (r:string) => Promise<void>
+    destroy: (s: string) => Promise<void>
     rejectMembership: (groups: string[], uid: number) => Promise<void>
     kick: (uid: number, groupName: string, isOwner: boolean) => Promise<void>
 }
@@ -25,14 +25,14 @@ type UserDataType = {
     groupTitleArray: string[]
 }
 
-module.exports = function (Groups: GroupsType) {
+exports = function (Groups: GroupsType) {
     async function clearGroupTitleIfSet(groupNames: string[], uid: number) {
         groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));
         if (!groupNames.length) {
             return;
         }
         // The next line calls a function in a module that has not been updated to TS yet
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const userData: UserDataType = await user.getUserData(uid) as UserDataType;
         if (!userData) {
             return;
