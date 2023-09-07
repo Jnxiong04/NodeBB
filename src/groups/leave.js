@@ -11,12 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
 const user_1 = __importDefault(require("../user"));
 const plugins_1 = __importDefault(require("../plugins"));
 const cache_1 = __importDefault(require("../cache"));
-exports = function (Groups) {
+module.exports = function (Groups) {
     function clearGroupTitleIfSet(groupNames, uid) {
         return __awaiter(this, void 0, void 0, function* () {
             groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));
