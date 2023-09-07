@@ -25,7 +25,7 @@ type UserDataType = {
     groupTitleArray: string[]
 }
 
-exports = function (Groups: GroupsType) {
+export = function (Groups: GroupsType) {
     async function clearGroupTitleIfSet(groupNames: string[], uid: number) {
         groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));
         if (!groupNames.length) {
